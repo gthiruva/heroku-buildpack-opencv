@@ -43,9 +43,26 @@ echo "-----> Vendoring OpenCV shared objects into slug"
 VENDORED_SO="$BUILD_DIR/vendor/opencv/lib"
 mkdir -p $VENDORED_SO
 cp -a "$VENDORED_OPENCV/lib/." $VENDORED_SO
+mkdir -p $VENDORED_OPENCV/lib/pkgconfig
+cat > $VENDORED_OPENCV/lib/pkgconfig/opencv.pc <<EOF
+# Package Information for pkg-config
+
+prefix=/app/vendor/opencv
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir_old=${prefix}/include/opencv
+includedir_new=${prefix}/include
+
+Name: OpenCV
+Description: Open Source Computer Vision Library
+Version: 2.4.3
+Libs: -L${libdir} -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_ml -lopencv_video -lopencv_features2d -lopencv_calib3d -lopencv_objdetect -lopencv_contrib -lopencv_legacy -lopencv_flann
+Cflags: -I${includedir_old} -I${includedir_new}
+EOF
 
 # runtime
 cd /app
+mkdir -p .profile.d
 echo "export VENDORED_OPENCV=\"$VENDORED_OPENCV\"" > .profile.d/opencv.sh
 echo "export PATH=\"\$VENDORED_OPENCV/bin:\$PATH\"" >> .profile.d/opencv.sh
 echo "export LD_RUN_PATH=\"\$VENDORED_OPENCV/lib:\$LD_RUN_PATH\"" >> .profile.d/opencv.sh
