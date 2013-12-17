@@ -7,6 +7,7 @@ set -e
 # parse and derive params
 BUILD_DIR=$1
 CACHE_DIR=$2
+BP_DIR=$PWD
 
 # debug
 # set -x
@@ -44,21 +45,10 @@ VENDORED_SO="$BUILD_DIR/vendor/opencv/lib"
 mkdir -p $VENDORED_SO
 cp -a "$VENDORED_OPENCV/lib/." $VENDORED_SO
 mkdir -p $VENDORED_OPENCV/lib/pkgconfig
-cat > $VENDORED_OPENCV/lib/pkgconfig/opencv.pc <<EOF
-# Package Information for pkg-config
+cp $BP_DIR/support/opencv.pc $VENDORED_OPENCV/lib/pkgconfig
 
-prefix=/app/vendor/opencv
-exec_prefix=${prefix}
-libdir=${exec_prefix}/lib
-includedir_old=${prefix}/include/opencv
-includedir_new=${prefix}/include
-
-Name: OpenCV
-Description: Open Source Computer Vision Library
-Version: 2.4.3
-Libs: -L${libdir} -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_ml -lopencv_video -lopencv_features2d -lopencv_calib3d -lopencv_objdetect -lopencv_contrib -lopencv_legacy -lopencv_flann
-Cflags: -I${includedir_old} -I${includedir_new}
-EOF
+echo "-----> OpenCV pkg-config file '$VENDORED_OPENCV/lib/pkgconfig/opencv.pc' looks like this: "
+cat $VENDORED_OPENCV/lib/pkgconfig/opencv.pc
 
 # runtime
 cd $BUILD_DIR
