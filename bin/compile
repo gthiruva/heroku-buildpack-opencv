@@ -61,7 +61,7 @@ Cflags: -I${includedir_old} -I${includedir_new}
 EOF
 
 # runtime
-cd /app
+cd $BUILD_DIR
 mkdir -p .profile.d
 echo "export VENDORED_OPENCV=\"$VENDORED_OPENCV\"" > .profile.d/opencv.sh
 echo "export PATH=\"\$VENDORED_OPENCV/bin:\$PATH\"" >> .profile.d/opencv.sh
